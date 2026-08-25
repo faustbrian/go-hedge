@@ -8,7 +8,7 @@ import (
 
 	"github.com/failsafe-go/failsafe-go"
 	"github.com/failsafe-go/failsafe-go/hedgepolicy"
-	"github.com/faustbrian/golib/pkg/hedge"
+	"github.com/faustbrian/go-hedge"
 )
 
 func BenchmarkDirectSuccess(benchmark *testing.B) {

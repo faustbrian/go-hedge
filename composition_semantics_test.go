@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/hedge"
+	"github.com/faustbrian/go-hedge"
 )
 
 func TestBulkheadBreakerAndRateAccountingCanBePerAttemptOrLogical(t *testing.T) {

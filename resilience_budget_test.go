@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/hedge"
-	"github.com/faustbrian/golib/pkg/resilience"
+	"github.com/faustbrian/go-hedge"
+	"github.com/faustbrian/go-resilience"
 )
 
 func TestHedgeConsumesAttachedResilienceBudget(t *testing.T) {

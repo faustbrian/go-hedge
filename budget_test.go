@@ -5,7 +5,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/faustbrian/golib/pkg/hedge"
+	"github.com/faustbrian/go-hedge"
 )
 
 func TestOutstandingBudgetBoundsSharedConcurrentHedges(t *testing.T) {

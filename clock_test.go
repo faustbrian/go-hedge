@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/hedge"
+	"github.com/faustbrian/go-hedge"
 )
 
 type manualClock struct {

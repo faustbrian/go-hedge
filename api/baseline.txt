@@ -1,5 +1,5 @@
-PACKAGE github.com/faustbrian/golib/pkg/hedge
-package hedge // import "github.com/faustbrian/golib/pkg/hedge"
+PACKAGE github.com/faustbrian/go-hedge
+package hedge // import "github.com/faustbrian/go-hedge"
 
 Package hedge executes explicitly replay-safe operations with bounded, delayed
 concurrent attempts. It does not infer idempotency or clone request state; an

@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/resilience"
+	"github.com/faustbrian/go-resilience"
 )
 
 // Attempt performs one independently owned execution. Cancellation is

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-module=github.com/faustbrian/golib/pkg/hedge
+module=github.com/faustbrian/go-hedge
 source_root=$(pwd -P)
 temp_root=${TMPDIR:-/tmp}
 workspace=$(mktemp -d "${temp_root%/}/hedge-consumer.XXXXXX")
@@ -30,7 +30,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/hedge"
+	"github.com/faustbrian/go-hedge"
 )
 
 func TestPublicConsumer(t *testing.T) {

@@ -3,7 +3,7 @@ package hedge
 import (
 	"sync"
 
-	"github.com/faustbrian/golib/pkg/resilience"
+	"github.com/faustbrian/go-resilience"
 )
 
 type sharedWorkPermit struct {
