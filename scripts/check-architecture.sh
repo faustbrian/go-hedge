@@ -1,10 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-production=$(mktemp)
-trap 'rm -f "$production"' EXIT
-rg --files -g '*.go' -g '!**/*_test.go' >"$production"
-if xargs rg -n '"unsafe"|//go:linkname|import[[:space:]]+"C"|func[[:space:]]+init[[:space:]]*\(' <"$production"; then
+production_go_files() {
+	files=$(git ls-files --cached --others --exclude-standard -- '*.go')
+	if [ -z "$files" ]; then
+		return
+	fi
+	printf '%s\n' "$files" | while IFS= read -r file; do
+		case "$file" in
+		*_test.go | .golib-tooling/* | .verification/*) continue ;;
+		esac
+		printf '%s\n' "$file"
+	done
+}
+
+files=$(production_go_files)
+matches=$(printf '%s\n' "$files" | while IFS= read -r file; do
+	[ -n "$file" ] || continue
+	grep -nEH '"unsafe"|//go:linkname|import[[:space:]]+"C"|func[[:space:]]+init[[:space:]]*\(' "$file" || true
+done)
+if [ -n "$matches" ]; then
+	printf '%s\n' "$matches"
 	echo 'forbidden production runtime mechanism found' >&2
 	exit 1
 fi

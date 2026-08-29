@@ -48,83 +48,9 @@
       "specifications": [],
       "conformance_corpora": [],
       "provenance": [],
-      "goal_files": [
-        ".ai/GOAL.md",
-        ".ai/GOAL_HARDEN.md"
-      ],
-      "goal_status": "implementation-evidence-inventoried",
-      "goal_evidence": [
-        {
-          "file": ".ai/GOAL.md",
-          "requirements_sha256": "61f41f6540273429934c974fd1927fd127911f306a17dcbef08d8f4e496e411b",
-          "implementation_evidence": [
-            "CHANGELOG.md",
-            "README.md",
-            "docs/api.md",
-            "docs/performance.md",
-            "docs/security.md"
-          ],
-          "verification_gates": [
-            "format-check",
-            "tidy-check",
-            "safety",
-            "vet",
-            "test",
-            "race",
-            "coverage",
-            "lint",
-            "staticcheck",
-            "vulnerability",
-            "secrets",
-            "licenses",
-            "sbom",
-            "fuzz",
-            "mutation",
-            "nilaway",
-            "docs",
-            "api",
-            "conformance",
-            "interoperability",
-            "benchmark"
-          ],
-          "implementation_status": "implemented-requires-fresh-verification"
-        },
-        {
-          "file": ".ai/GOAL_HARDEN.md",
-          "requirements_sha256": "ed9707658db99c4eb3c0eac27a5816c4ce32ba59c5764f4921598324f4f590b3",
-          "implementation_evidence": [
-            "CHANGELOG.md",
-            "README.md",
-            "docs/api.md",
-            "docs/performance.md",
-            "docs/security.md"
-          ],
-          "verification_gates": [
-            "format-check",
-            "tidy-check",
-            "safety",
-            "vet",
-            "test",
-            "race",
-            "coverage",
-            "lint",
-            "staticcheck",
-            "vulnerability",
-            "secrets",
-            "licenses",
-            "sbom",
-            "fuzz",
-            "mutation",
-            "nilaway",
-            "docs",
-            "api",
-            "conformance",
-            "interoperability",
-            "benchmark"
-          ],
-          "implementation_status": "implemented-requires-fresh-verification"
-        }
-      ],
+      "goal_files": [],
+      "goal_status": "not-applicable",
+      "goal_evidence": [],
       "gates": {
         "api_compatibility": true,
         "benchmarks": true,

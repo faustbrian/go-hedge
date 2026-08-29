@@ -38,13 +38,13 @@ policy, err := hedge.NewPolicy(hedge.Config[*http.Response]{
 	CleanupTimeout:     50 * time.Millisecond,
 	Clock:              hedge.RealClock{},
 	Budget:             budget,
-	Classifier: hedge.ClassifyFunc[*http.Response](func(_ context.Context, r hedge.AttemptResult[*http.Response]) (hedge.Classification, error) {
+	Classifier: (hedge.ClassifyFunc[*http.Response])(func(_ context.Context, r hedge.AttemptResult[*http.Response]) (hedge.Classification, error) {
 		if r.Err == nil && r.Value.StatusCode < 500 {
 			return hedge.ClassificationSuccess, nil
 		}
 		return hedge.ClassificationFailure, nil
 	}),
-	Disposer: hedge.DisposeFunc[*http.Response](func(_ context.Context, response *http.Response) error {
+	Disposer: (hedge.DisposeFunc[*http.Response])(func(_ context.Context, response *http.Response) error {
 		if response == nil || response.Body == nil {
 			return nil
 		}
@@ -58,7 +58,7 @@ if err != nil {
 }
 
 response, report, err := hedge.Do(ctx, policy,
-	hedge.AttemptFactoryFunc[*http.Response](func(info hedge.AttemptInfo) (hedge.Attempt[*http.Response], string, error) {
+	(hedge.AttemptFactoryFunc[*http.Response])(func(info hedge.AttemptInfo) (hedge.Attempt[*http.Response], string, error) {
 		req, err := newIndependentlyOwnedRequest(info) // including a fresh Body
 		if err != nil {
 			return nil, "", err
@@ -108,8 +108,3 @@ sequentially, chooses fallbacks, or combines retry and hedge presets. See
 
 See the [API reference](docs/api.md), [operations guide](docs/operations.md),
 [FAQ](docs/faq.md), and [changelog](CHANGELOG.md).
-
-## Ecosystem
-
-Use the [Golib documentation portal](https://github.com/faustbrian/golib/blob/main/docs/index.md)
-to choose companion packages, supported stacks, recipes, and operations guidance.
