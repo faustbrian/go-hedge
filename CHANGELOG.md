@@ -7,7 +7,8 @@
 - Replace the repository-local verification implementation with the pinned
   `go-library-tools` v1.0.4 CLI and reusable workflow while preserving package
   policy and content-addressed verification evidence.
-- Make architecture verification portable to CI runners without `ripgrep`.
+- Make architecture verification portable to CI runners without `ripgrep` and
+  restrict it to repository-owned Go sources.
 
 ### Documentation
 
