@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-production=$(mktemp)
-trap 'rm -f "$production"' EXIT
-rg --files -g '*.go' -g '!**/*_test.go' >"$production"
-if xargs rg -n '"unsafe"|//go:linkname|import[[:space:]]+"C"|func[[:space:]]+init[[:space:]]*\(' <"$production"; then
+matches=$(find . -type f -name '*.go' ! -name '*_test.go' \
+	-exec grep -nEH '"unsafe"|//go:linkname|import[[:space:]]+"C"|func[[:space:]]+init[[:space:]]*\(' {} + || true)
+if [ -n "$matches" ]; then
+	printf '%s\n' "$matches"
 	echo 'forbidden production runtime mechanism found' >&2
 	exit 1
 fi
