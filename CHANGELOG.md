@@ -4,6 +4,12 @@
 
 ### Changed
 
+- Adopt the checksum-verified `go-library-tools` v1.3.0 CLI, schema-v2 cohesion
+  metadata, and repository-local `make cohesion` gate without changing the
+  hedge API or runtime behavior.
+- Pin reusable CI to the authoritative cohesion workflow and enforce the local
+  cohesion contract in the repository's aggregate gate.
+
 - Replace the repository-local verification implementation with the pinned
   `go-library-tools` v1.0.14 CLI and reusable workflow while preserving package
   policy and content-addressed verification evidence.
@@ -11,6 +17,10 @@
   restrict it to repository-owned Go sources.
 
 ### Documentation
+
+- Publish the module's family, selection, ownership, lifecycle, support, and
+  delivery metadata, and link the README to the immutable v1.3.0 ecosystem
+  index and family guidance.
 
 - Replace the archived monorepo link with package-owned documentation.
 
