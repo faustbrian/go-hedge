@@ -4,13 +4,22 @@
 
 ### Changed
 
+- Adopt the checksum-verified `go-library-tools` v1.4.0 CLI, schema-v2 cohesion
+  metadata, repository-local `make cohesion` gate, and immutable W14-enforcement
+  workflow, and reconcile the `go-resilience` checksum to its published v1.0.0
+  archive without changing the hedge API or runtime behavior.
+
 - Replace the repository-local verification implementation with the pinned
-  `go-library-tools` v1.0.4 CLI and reusable workflow while preserving package
+  `go-library-tools` v1.0.14 CLI and reusable workflow while preserving package
   policy and content-addressed verification evidence.
 - Make architecture verification portable to CI runners without `ripgrep` and
   restrict it to repository-owned Go sources.
 
 ### Documentation
+
+- Publish the module's family, selection, ownership, lifecycle, support, and
+  delivery metadata, and link the README to the immutable v1.4.0 ecosystem
+  index and family guidance.
 
 - Replace the archived monorepo link with package-owned documentation.
 

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "repository": "github.com/faustbrian/go-hedge",
   "go_version": "1.26.6",
   "modules": [
@@ -51,6 +51,81 @@
       "goal_files": [],
       "goal_status": "not-applicable",
       "goal_evidence": [],
+      "cohesion": {
+        "family": "resilience",
+        "secondary_capabilities": [
+          "resilience-and-admission"
+        ],
+        "responsibility": "Provide finite delayed duplicate attempts for explicitly replay-safe work under caller-owned deadlines and bounded amplification.",
+        "non_goals": [
+          "Infer replay safety, clone requests, discover or load-balance endpoints, retry sequentially, select fallbacks, or provide a combined retry and hedge preset."
+        ],
+        "public_package_identifier": "hedge",
+        "primary_entry_packages": [
+          "github.com/faustbrian/go-hedge"
+        ],
+        "package_selection": {
+          "github.com/faustbrian/go-hedge": "Use for bounded concurrent duplicate attempts when downstream work is explicitly replay-safe and tail latency warrants measured hedging."
+        },
+        "lifecycle_status": "active",
+        "maturity": "stable",
+        "construction_styles": [
+          "new-config",
+          "plain-function",
+          "validated-value"
+        ],
+        "lifecycle_styles": [
+          "stateless",
+          "wait"
+        ],
+        "ownership": {
+          "configuration": "caller",
+          "mutable_inputs": [
+            "borrow",
+            "copy",
+            "transfer"
+          ],
+          "runtime_resources": "shared",
+          "background_work": "package"
+        },
+        "optional_owned_dependencies": [],
+        "adapters": [],
+        "companions": [
+          "github.com/faustbrian/go-circuit-breaker",
+          "github.com/faustbrian/go-concurrency-limit",
+          "github.com/faustbrian/go-retry"
+        ],
+        "supported_go": {
+          "minimum": "1.26.6",
+          "tested": [
+            "1.26.6"
+          ]
+        },
+        "supported_platforms": [
+          "portable-go"
+        ],
+        "supported_backends": [],
+        "supported_protocols": [],
+        "documentation": {
+          "readme": "README.md",
+          "api": "docs/api.md",
+          "adoption": "docs/composition.md",
+          "security": "docs/security.md",
+          "compatibility": "docs/migration.md",
+          "performance": "docs/performance.md",
+          "examples": "README.md",
+          "faq": "docs/faq.md",
+          "changelog": "CHANGELOG.md",
+          "pkg_go_dev": "https://pkg.go.dev/github.com/faustbrian/go-hedge",
+          "ecosystem_index": "https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/README.md"
+        },
+        "known_good_compatibility_sets": [],
+        "delivery": {
+          "implementation": "not-started",
+          "hardening": "not-started",
+          "release": "not-started"
+        }
+      },
       "gates": {
         "api_compatibility": true,
         "benchmarks": true,

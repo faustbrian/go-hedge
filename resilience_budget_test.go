@@ -93,6 +93,7 @@ func TestHedgeResilienceBudgetRequiresAttachedScope(t *testing.T) {
 	t.Parallel()
 
 	config := validConfig()
+	config.Clock = newManualClock()
 	config.Budget = nil
 	config.UseResilienceBudget = true
 	policy, err := hedge.NewPolicy(config)

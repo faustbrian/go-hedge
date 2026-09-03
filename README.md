@@ -108,3 +108,7 @@ sequentially, chooses fallbacks, or combines retry and hedge presets. See
 
 See the [API reference](docs/api.md), [operations guide](docs/operations.md),
 [FAQ](docs/faq.md), and [changelog](CHANGELOG.md).
+
+For ecosystem-wide selection and ownership guidance, see the versioned
+[Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/README.md)
+and its [Resilience family](https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/design-language.md#package-families-and-selection).
