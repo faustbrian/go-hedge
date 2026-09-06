@@ -17,6 +17,9 @@
 
 ### Documentation
 
+- Add canonical v1 installation, stable Go support, lifecycle and ownership,
+  project support, and security-reporting guidance.
+
 - Publish the module's family, selection, ownership, lifecycle, support, and
   delivery metadata, and link the README to the immutable v1.4.0 ecosystem
   index and family guidance.

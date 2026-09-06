@@ -22,6 +22,14 @@ and the delayed-duplicate technique described in
 contexts make cancellation cooperative: canceling a context asks work to stop;
 it does not wait for it to stop.
 
+The module is a stable v1 public library. It requires Go 1.26.6 or newer.
+
+## Install
+
+```sh
+go get github.com/faustbrian/go-hedge@v1
+```
+
 ## Quick start
 
 ```go
@@ -93,6 +101,14 @@ sequentially, chooses fallbacks, or combines retry and hedge presets. See
 
 ## API and ownership
 
+A `Policy` copies its schedule and is immutable after construction. Its
+callback dependencies are borrowed and must remain concurrency-safe for the
+policy's lifetime. The policy itself starts no work. Each `Do` call owns a
+bounded set of attempt goroutines, timers, and cancellation scopes. Cancellation
+is cooperative, so retain the returned `Report` and call `Wait` with a bounded
+context during shutdown. A shared `OutstandingBudget` is concurrency-safe and
+starts no goroutines.
+
 - Ordinal `0` is the original; `1..MaxHedges` are delayed hedges.
 - Exactly one published success wins. Published equal-clock successes use the
   lower ordinal; publication itself is linearized by the execution.
@@ -106,8 +122,18 @@ sequentially, chooses fallbacks, or combines retry and hedge presets. See
   execution sharing it. Use a distinct shared instance per resource when
   independent bounds are required.
 
-See the [API reference](docs/api.md), [operations guide](docs/operations.md),
-[FAQ](docs/faq.md), and [changelog](CHANGELOG.md).
+## Documentation
+
+- [Documentation index](docs/README.md)
+- [API reference](docs/api.md)
+- [Composition and adoption guidance](docs/composition.md)
+- [Operations guide](docs/operations.md)
+- [Performance methodology](docs/performance.md)
+- [FAQ](docs/faq.md)
+- [Support](SUPPORT.md)
+- [Security policy and reporting guidance](SECURITY.md)
+- [Compatibility policy](COMPATIBILITY.md)
+- [Release history](CHANGELOG.md)
 
 For ecosystem-wide selection and ownership guidance, see the versioned
 [Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/README.md)
