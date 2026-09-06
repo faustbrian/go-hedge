@@ -17,6 +17,11 @@
 
 ### Documentation
 
+- Clarify root and independently releasable nested-module tag conventions,
+  route adoption discussions and vulnerability reports to their dedicated
+  GitHub facilities, and correct the v1.0.0 date to the signed tag and
+  published release chronology.
+
 - Add canonical v1 installation, stable Go support, lifecycle and ownership,
   project support, and security-reporting guidance.
 
@@ -26,7 +31,7 @@
 
 - Replace the archived monorepo link with package-owned documentation.
 
-## 1.0.0 - 2026-08-25
+## 1.0.0 - 2026-08-26
 
 ### Changed
 
