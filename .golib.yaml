@@ -12,10 +12,19 @@ mutation:
   - module: "."
     archive: ".verification/mutation/bootstrap/root.zip"
     ledger: ".verification/mutation/migration-ledger.json"
+api:
+  baselines:
+  - module: "."
+    mode: apidiff
+    path: api/baseline.txt
 operations:
 - module: "."
   gate: test
   steps:
+  - type: make
+    makefile: verification/package.mk
+    target: api
+    timeout: 20m
   - type: make
     makefile: verification/package.mk
     target: architecture
@@ -49,13 +58,6 @@ operations:
   - type: make
     makefile: verification/package.mk
     target: docs
-    timeout: 20m
-- module: "."
-  gate: api
-  steps:
-  - type: make
-    makefile: verification/package.mk
-    target: api
     timeout: 20m
 - module: "."
   gate: fuzz
