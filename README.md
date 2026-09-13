@@ -7,7 +7,7 @@
 [![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-hedge.svg)](https://pkg.go.dev/github.com/faustbrian/go-hedge)
 [![Release](https://img.shields.io/github/v/release/faustbrian/go-hedge?sort=semver)](https://github.com/faustbrian/go-hedge/releases)
-[![Go](https://img.shields.io/badge/go-1.26.6-00ADD8?logo=go)](https://go.dev/)
+[![Go](https://img.shields.io/badge/go-1.27.0-00ADD8?logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 `hedge` reduces eligible tail latency by starting a finite number of duplicate
@@ -22,7 +22,7 @@ and the delayed-duplicate technique described in
 contexts make cancellation cooperative: canceling a context asks work to stop;
 it does not wait for it to stop.
 
-The module is a stable v1 public library. It requires Go 1.26.6 or newer.
+The module is a stable v1 public library. It requires Go 1.27.0 or newer.
 
 ## Install
 
