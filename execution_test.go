@@ -108,7 +108,7 @@ func TestAllFailuresSelectOriginalCauseDeterministically(t *testing.T) {
 	// The policy owns this disposer; replace it by rebuilding the immutable policy.
 	config := validConfig()
 	config.Delay = 20 * time.Millisecond
-	config.TotalTimeout = 5 * time.Second
+	config.TotalTimeout = 100 * time.Millisecond
 	config.Disposer = hedge.DisposeFunc[string](func(_ context.Context, value string) error {
 		disposedMu.Lock()
 		disposed = append(disposed, value)
