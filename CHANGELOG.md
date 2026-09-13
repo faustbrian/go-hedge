@@ -4,6 +4,8 @@
 
 ### Changed
 
+- Register the released public API baseline with the shared compatibility gate while retaining the repository-owned API snapshot oracle.
+
 - Adopt the checksum-verified `go-library-tools` v1.4.0 CLI, schema-v2 cohesion
   metadata, repository-local `make cohesion` gate, and immutable W14-enforcement
   workflow, and reconcile the `go-resilience` checksum to its published v1.0.0
