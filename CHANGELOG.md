@@ -33,6 +33,18 @@
 
 - Replace the archived monorepo link with package-owned documentation.
 
+## 1.0.2 - 2026-09-30
+
+### Fixed
+
+- Stop the scheduled hedge timer when caller cancellation is observed through
+  the total-deadline path, preserving the caller-cancellation cause and report.
+
+### Security
+
+- Document callback trust, aggregate admission and cleanup limits, privacy
+  boundaries, residual-risk owners, and coordinated disclosure procedures.
+
 ## 1.0.0 - 2026-08-26
 
 ### Changed
