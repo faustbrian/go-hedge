@@ -454,15 +454,15 @@ func Do[T any](ctx context.Context, policy *Policy[T], factory AttemptFactory[T]
 			closeExecution()
 			return zero, report, &CanceledError{cause: ctx.Err()}
 		case <-totalCtx.Done():
+			if timer != nil {
+				timer.Stop()
+			}
 			if err := ctx.Err(); err != nil {
 				report.Reason = ReasonCallerCanceled
 				emit(config.Observer, Observation{Outcome: OutcomeCallerCanceled, Resource: config.Resource})
 				disposeAll(config, failures, cleanup)
 				closeExecution()
 				return zero, report, &CanceledError{cause: err}
-			}
-			if timer != nil {
-				timer.Stop()
 			}
 			report.Reason = ReasonTotalDeadline
 			emit(config.Observer, Observation{Outcome: OutcomeTotalDeadline, Resource: config.Resource})
