@@ -4,9 +4,6 @@
 
 ### Changed
 
-- Keep reusable CI and its checked-out tooling on the same v1.8.4 source
-  while retaining the checksum-verified v1.4.0 CLI bootstrap.
-
 - Register the released public API baseline with the shared compatibility gate while retaining the repository-owned API snapshot oracle.
 
 - Adopt the checksum-verified `go-library-tools` v1.4.0 CLI, schema-v2 cohesion
@@ -35,6 +32,13 @@
   index and family guidance.
 
 - Replace the archived monorepo link with package-owned documentation.
+
+## 1.0.3 - 2026-10-01
+
+### Changed
+
+- Keep reusable CI and its checked-out tooling on the same v1.8.4 source
+  while retaining the checksum-verified v1.4.0 CLI bootstrap.
 
 ## 1.0.2 - 2026-09-30
 
