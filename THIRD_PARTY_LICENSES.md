@@ -2,7 +2,7 @@
 
 Production budget composition uses these MIT-licensed modules:
 
-- `github.com/faustbrian/go-resilience` v1.0.0;
+- `github.com/faustbrian/go-resilience` v1.1.0;
 - `github.com/faustbrian/go-resilience/v2` v2.0.0.
 
 Benchmark-only dependencies are:

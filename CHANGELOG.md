@@ -4,6 +4,10 @@
 
 ### Changed
 
+- Update the retained Resilience v1 budget dependency to v1.1.0 and align
+  its MIT license disclosure. Preserve explicit v1/v2 scope selection,
+  borrowed permit ownership, the Hedge API, and the existing Go 1.27 minimum.
+
 - Update the benchmark-only Failsafe-Go comparator to v0.9.8 without changing
   the Hedge API or budget composition. Applications also importing Failsafe
   can select this newer version through the shared module graph; explicit
