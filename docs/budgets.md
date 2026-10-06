@@ -20,10 +20,21 @@ limits of `R` retries and `H` hedges can otherwise create up to
 ## Shared resilience budget
 
 New compositions should set `Config.UseResilienceBudget` and leave `Budget`
-nil. `Do` then requires a `resilience.WorkBudgetScope` attached to its context.
+nil. `Do` then requires exactly one scope from the published
+`github.com/faustbrian/go-resilience/v2` or retained
+`github.com/faustbrian/go-resilience` v1 API attached to its context.
+Attaching both versions, in either order, is a local `ErrInvalidPolicy` failure
+before factory invocation or admission through either owner. Without an attached
+scope, the existing v1 `ErrBudgetScopeRequired` identity is retained.
 It reuses an outer physical attempt when present, admits each hedge with that
 attempt as parent, and completes the returned permit when the hedge result is
-consumed or reclaimed.
+consumed or reclaimed. Selection stays with the attached version for the whole
+execution; a borrowed permit remains the outer caller's completion obligation.
+
+The v2 route classifies only direct v2 budget rejections as capacity denial and
+only direct standard cancellation sentinels as cancellation. It does not inspect
+wrapped application errors through the v1 classifier. The explicit v1 route
+retains its existing error traversal and admission behavior.
 
 `Budget` and `OutstandingBudget` remain as a standalone compatibility path.
 Configuring both budget owners is rejected. Capacity exhaustion increments

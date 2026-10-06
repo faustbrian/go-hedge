@@ -4,6 +4,12 @@
 
 ### Changed
 
+- Consume the published Resilience v2 shared budget while retaining the explicit
+  v1 route and existing Hedge API. Reject contexts carrying both scope versions
+  before factory invocation or charging either budget, preserve borrowed
+  physical-attempt ownership and lineage, and classify v2 admission errors
+  directly without legacy error traversal.
+
 - Register the released public API baseline with the shared compatibility gate while retaining the repository-owned API snapshot oracle.
 
 - Adopt the checksum-verified `go-library-tools` v1.4.0 CLI, schema-v2 cohesion
