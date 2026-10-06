@@ -273,21 +273,19 @@ func Do[T any](ctx context.Context, policy *Policy[T], factory AttemptFactory[T]
 	}
 
 	originalCtx := attemptsCtx
-	var originalWork resilience.Attempt
+	var originalOrdinal uint64
 	var originalPermit Permit
+	var sharedBudget sharedBudgetVersion
 	if config.UseResilienceBudget {
-		if current, ok := resilience.AttemptFromContext(attemptsCtx); ok {
-			originalWork = current
-		} else {
-			admittedCtx, admitted, permit, err := resilience.AdmitAttempt(attemptsCtx, resilience.OriginOriginal, 0, config.Clock.Now())
-			if err != nil {
-				report.Reason = ReasonBudgetFailure
-				closeExecution()
-				return zero, report, &ExecutionError{cause: err}
-			}
-			originalCtx = admittedCtx
-			originalWork = admitted
-			originalPermit = wrapResiliencePermit(permit)
+		var err error
+		sharedBudget, err = selectSharedBudget(attemptsCtx)
+		if err == nil {
+			originalCtx, originalOrdinal, originalPermit, err = sharedBudget.original(attemptsCtx, config.Clock.Now())
+		}
+		if err != nil {
+			report.Reason = ReasonBudgetFailure
+			closeExecution()
+			return zero, report, &ExecutionError{cause: err}
 		}
 	}
 	if err := launch(originalCtx, AttemptInfo{}, originalPermit); err != nil {
@@ -396,19 +394,17 @@ func Do[T any](ctx context.Context, policy *Policy[T], factory AttemptFactory[T]
 			admitted := false
 			var admissionErr error
 			if config.UseResilienceBudget {
-				var sharedPermit resilience.Permit
-				attemptCtx, _, sharedPermit, admissionErr = resilience.AdmitAttempt(attemptsCtx, resilience.OriginHedge, originalWork.Ordinal, config.Clock.Now())
+				attemptCtx, permit, admissionErr = sharedBudget.hedge(attemptsCtx, originalOrdinal, config.Clock.Now())
 				if admissionErr == nil {
-					permit = wrapResiliencePermit(sharedPermit)
 					admitted = true
 				}
 			} else {
 				permit, admitted = config.Budget.TryAcquire(config.Resource)
 			}
-			if admissionErr != nil && (errors.Is(admissionErr, context.Canceled) || errors.Is(admissionErr, context.DeadlineExceeded)) {
+			if admissionErr != nil && sharedBudget.cancellation(admissionErr) {
 				continue
 			}
-			if admissionErr != nil && !isCapacityDenial(admissionErr) {
+			if admissionErr != nil && !sharedBudget.capacityDenial(admissionErr) {
 				report.Reason = ReasonBudgetFailure
 				disposeAll(config, failures, cleanup)
 				closeExecution()

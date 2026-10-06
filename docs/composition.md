@@ -20,7 +20,9 @@
   multiplies the two. Enable `UseResilienceBudget` on both policies and pass one
   scoped context through the complete composition. The current attempt is
   reused across the nested boundary and only newly created physical work draws
-  another permit.
+  another permit. All layers must consume the same attached Resilience major
+  version; Hedge supports public v2 and retains an explicit v1 route. Attaching
+  both scope versions is rejected before work, not a way to combine allowances.
 - **Adaptive throttle:** local throttle rejection is an admission decision, not
   a hedgeable downstream failure by default. Starting another attempt evades
   the protection and increases load.

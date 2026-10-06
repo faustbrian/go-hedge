@@ -9,8 +9,9 @@ Budgets declare a positive finite `Capacity` no greater than
 contract.
 
 `UseResilienceBudget` selects the shared retry-plus-hedge budget carried by
-context. In this mode `Budget` must be nil and `Do` fails before constructing an
-attempt when no scope is attached. With the option disabled, `Budget` remains
+context. In this mode `Budget` must be nil and exactly one Resilience v1 or v2
+scope must be attached. `Do` fails before constructing an attempt when no scope
+or both versions are attached. With the option disabled, `Budget` remains
 required and preserves the standalone compatibility contract.
 
 `Do` starts ordinal zero once. `AttemptFactory` owns construction of fresh
