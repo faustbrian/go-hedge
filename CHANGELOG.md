@@ -4,17 +4,6 @@
 
 ### Changed
 
-- Update the retained Resilience v1 budget dependency to v1.1.0 and align
-  its MIT license disclosure. Preserve explicit v1/v2 scope selection,
-  borrowed permit ownership, the Hedge API, and the existing Go 1.27 minimum.
-
-- Update the benchmark-only Failsafe-Go comparator to v0.9.8 without changing
-  the Hedge API or budget composition. Applications also importing Failsafe
-  can select this newer version through the shared module graph; explicit
-  implementations of its bulkhead or circuit-breaker builder interfaces may
-  need the newly added methods. Reconcile comparator and production Resilience
-  license disclosures with the adopted versions.
-
 - Consume the published Resilience v2 shared budget while retaining the explicit
   v1 route and existing Hedge API. Reject contexts carrying both scope versions
   before factory invocation or charging either budget, preserve borrowed
@@ -49,6 +38,21 @@
   index and family guidance.
 
 - Replace the archived monorepo link with package-owned documentation.
+
+## 1.1.1 - 2026-10-06
+
+### Changed
+
+- Update the retained Resilience v1 budget dependency to v1.1.0 and align
+  its MIT license disclosure. Preserve explicit v1/v2 scope selection,
+  borrowed permit ownership, the Hedge API, and the existing Go 1.27 minimum.
+
+- Update the benchmark-only Failsafe-Go comparator to v0.9.8 without changing
+  the Hedge API or budget composition. Applications also importing Failsafe
+  can select this newer version through the shared module graph; explicit
+  implementations of its bulkhead or circuit-breaker builder interfaces may
+  need the newly added methods. Reconcile comparator and production Resilience
+  license disclosures with the adopted versions.
 
 ## 1.0.3 - 2026-10-01
 
