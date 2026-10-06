@@ -68,7 +68,7 @@ func TestSelectedV2BudgetClassifiesRealAdmissionErrorsDirectly(t *testing.T) {
 	canceledCtx, cancel := context.WithCancel(ctx)
 	cancel()
 	_, _, _, canceled := resilience2.AdmitAttempt(canceledCtx, resilience2.OriginHedge, original.Ordinal, time.Now())
-	if canceled != context.Canceled || !sharedBudgetV2.cancellation(canceled) || sharedBudgetV2.cancellation(fmt.Errorf("outer: %w", canceled)) {
+	if canceled != context.Canceled || !sharedBudgetV2.cancellation(canceled) || sharedBudgetV2.cancellation(fmt.Errorf("outer: %w", canceled)) { //nolint:errorlint // The v2 contract requires direct sentinel identity; wrapped cancellation must not qualify.
 		t.Fatalf("cancellation identity=%v", canceled)
 	}
 	if err := additionalPermit.Complete(); err != nil {

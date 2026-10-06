@@ -64,6 +64,8 @@ func (version sharedBudgetVersion) capacityDenial(err error) bool {
 		switch resilience2.RejectionReasonOf(err) {
 		case resilience2.ReasonExecutionLimit, resilience2.ReasonConcurrentLimit, resilience2.ReasonWindowLimit:
 			return true
+		case resilience2.ReasonResourceLimit, resilience2.ReasonScopeLimit, resilience2.ReasonDuplicateWork, resilience2.ReasonOriginalRequired, resilience2.ReasonUnknownParent:
+			return false
 		default:
 			return false
 		}

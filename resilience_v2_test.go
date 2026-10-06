@@ -11,7 +11,7 @@ import (
 	resilience2 "github.com/faustbrian/go-resilience/v2"
 )
 
-func newV2Scope(t *testing.T, ctx context.Context, additional uint64) (resilience2.WorkBudgetScope, context.Context) {
+func newV2Scope(ctx context.Context, t *testing.T, additional uint64) (resilience2.WorkBudgetScope, context.Context) {
 	t.Helper()
 	budget, err := resilience2.NewBudget(resilience2.BudgetConfig{
 		MaxResources: 1, MaxScopes: 1, MaxAdditionalPerExecution: additional,
@@ -48,7 +48,7 @@ func newSharedPolicy(t *testing.T, clock hedge.Clock, hedges uint) *hedge.Policy
 }
 
 func TestHedgeResilienceV2AdmitsOneAdditionalAndRefusesTheNext(t *testing.T) {
-	scope, ctx := newV2Scope(t, context.Background(), 1)
+	scope, ctx := newV2Scope(context.Background(), t, 1)
 	clock := newManualClock()
 	config := validConfig()
 	config.Clock, config.MaxHedges, config.Budget, config.UseResilienceBudget = clock, 2, nil, true
@@ -128,7 +128,7 @@ func TestHedgeResilienceV2AdmitsOneAdditionalAndRefusesTheNext(t *testing.T) {
 }
 
 func TestHedgeResilienceV2BorrowsAnOuterAdditionalAttempt(t *testing.T) {
-	scope, ctx := newV2Scope(t, context.Background(), 1)
+	scope, ctx := newV2Scope(context.Background(), t, 1)
 	_, original, originalPermit, err := resilience2.AdmitAttempt(ctx, resilience2.OriginOriginal, 0, time.Now())
 	if err != nil {
 		t.Fatal(err)
@@ -180,7 +180,7 @@ func TestHedgeResilienceV2MissingScopeAndPreCanceledIdentity(t *testing.T) {
 			ctx := context.Background()
 			var scope resilience2.WorkBudgetScope
 			if canceled {
-				scope, ctx = newV2Scope(t, ctx, 1)
+				scope, ctx = newV2Scope(ctx, t, 1)
 				var cancel context.CancelFunc
 				ctx, cancel = context.WithCancel(ctx)
 				cancel()
@@ -222,12 +222,12 @@ func TestHedgeRejectsBothResilienceScopeVersionsBeforeDispatch(t *testing.T) {
 			var oldScope resilience1.WorkBudgetScope
 			var newScope resilience2.WorkBudgetScope
 			if firstV2 {
-				newScope, ctx = newV2Scope(t, ctx, 1)
+				newScope, ctx = newV2Scope(ctx, t, 1)
 				oldScope, ctx, err = legacy.Start(ctx, metadata)
 			} else {
 				oldScope, ctx, err = legacy.Start(ctx, metadata)
 				if err == nil {
-					newScope, ctx = newV2Scope(t, ctx, 1)
+					newScope, ctx = newV2Scope(ctx, t, 1)
 				}
 			}
 			if err != nil {
@@ -276,7 +276,7 @@ func TestHedgeRejectsBothResilienceScopeVersionsBeforeDispatch(t *testing.T) {
 }
 
 func TestHedgeResilienceV2ClosedScopeRetainsItsErrorIdentity(t *testing.T) {
-	scope, ctx := newV2Scope(t, context.Background(), 1)
+	scope, ctx := newV2Scope(context.Background(), t, 1)
 	if err := scope.Close(); err != nil {
 		t.Fatal(err)
 	}
@@ -294,7 +294,7 @@ func TestHedgeResilienceV2ClosedScopeRetainsItsErrorIdentity(t *testing.T) {
 }
 
 func TestHedgeResilienceV2AdditionalDescendsFromBorrowedAttempt(t *testing.T) {
-	scope, ctx := newV2Scope(t, context.Background(), 2)
+	scope, ctx := newV2Scope(context.Background(), t, 2)
 	_, original, originalPermit, err := resilience2.AdmitAttempt(ctx, resilience2.OriginOriginal, 0, time.Now())
 	if err != nil {
 		t.Fatal(err)
