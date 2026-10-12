@@ -5,7 +5,7 @@ go 1.27.0
 require (
 	github.com/failsafe-go/failsafe-go v0.9.8
 	github.com/faustbrian/go-resilience v1.1.0
-	github.com/faustbrian/go-resilience/v2 v2.0.0
+	github.com/faustbrian/go-resilience/v2 v2.0.1
 )
 
 require github.com/bits-and-blooms/bitset v1.24.4 // indirect
