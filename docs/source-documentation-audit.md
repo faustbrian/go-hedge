@@ -167,3 +167,10 @@ caller obligations rather than promises inferred from narrow fixtures.
 - Task-owned caches and temporary helper/output are disposed after evidence
   capture. The committed worktree is preserved for coordinator delivery;
   remote-main qualification and CI are not local completion claims.
+
+## Objective enforcement adoption
+
+The local `source-docs-check` target is required by ordinary/full checks and CI.
+Shared CI uses `source_documentation: check` with the immutable Tools v2.4.0
+workflow and matching authenticated binary/checksum declaration. Structural
+checks do not replace this maintained semantic audit or native docs/examples.
