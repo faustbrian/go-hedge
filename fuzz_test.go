@@ -7,6 +7,9 @@ import (
 	"github.com/faustbrian/go-hedge"
 )
 
+// FuzzPolicyValidationRejectsUnsafeBounds varies hedge count, signed nanosecond
+// delays/deadlines and replay declaration; successful construction must retain
+// the finite positive bounds without executing requests.
 func FuzzPolicyValidationRejectsUnsafeBounds(fuzz *testing.F) {
 	fuzz.Add(uint8(1), int64(time.Millisecond), int64(time.Second), true)
 	fuzz.Add(uint8(0), int64(0), int64(0), false)
@@ -23,6 +26,9 @@ func FuzzPolicyValidationRejectsUnsafeBounds(fuzz *testing.F) {
 	})
 }
 
+// FuzzOutstandingBudgetNeverExceedsLimit bounds capacities to 1..32 and
+// acquisition count to one byte, checking sequential denial before oversubscription
+// and releasing every admitted permit. Concurrent release has separate fixtures.
 func FuzzOutstandingBudgetNeverExceedsLimit(fuzz *testing.F) {
 	fuzz.Add(uint8(3), uint8(9))
 	fuzz.Fuzz(func(t *testing.T, limitByte, acquisitions uint8) {

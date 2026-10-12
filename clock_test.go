@@ -8,6 +8,9 @@ import (
 	"github.com/faustbrian/go-hedge"
 )
 
+// manualClock owns simulated time and timer registration under mu. Advance
+// snapshots registration before firing timers, avoiding nested clock/timer locks.
+// WaitTimers counts registrations (including stopped timers), not live timers.
 type manualClock struct {
 	mu      sync.Mutex
 	now     time.Time
@@ -83,6 +86,8 @@ func (clock *manualClock) WaitTimers(count int) {
 	}
 }
 
+// manualTimer owns done under mu. Its one-element event buffer permits exactly
+// one fire without a receiver; only Stop closes stopped, and events stays open.
 type manualTimer struct {
 	mu      sync.Mutex
 	at      time.Time

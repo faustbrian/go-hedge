@@ -53,17 +53,27 @@ func (outcome Outcome) String() string {
 	}
 }
 
-// Observation contains bounded metadata and deliberately excludes results,
-// request data, URLs, and raw errors.
+// Observation excludes returned values and raw errors. Resource and Endpoint
+// are caller labels bounded in length, not automatically sanitized/redacted or
+// cardinality-limited. Events from workers may arrive after Do returns.
 type Observation struct {
-	Outcome  Outcome
-	Ordinal  uint
-	Delay    time.Duration
+	// Outcome identifies the event; not every terminal failure has an event.
+	Outcome Outcome
+	// Ordinal is local to Do: zero is original, positive values are hedge slots.
+	Ordinal uint
+	// Delay is the chosen slot delay, or zero for the original.
+	Delay time.Duration
+	// Duration measures attempt plus classification time where available,
+	// including on cleanup-failure events; it is not disposal latency.
 	Duration time.Duration
+	// Resource is the policy's caller-provided budget/observation identity.
 	Resource string
+	// Endpoint is the factory's optional caller-provided endpoint identity.
 	Endpoint string
 	// Classification is set for OutcomeAttemptCompleted and zero otherwise.
 	Classification Classification
-	Winner         bool
-	Loser          bool
+	// Winner marks the selected-success event, not every successful completion.
+	Winner bool
+	// Loser marks cleanup-failure events, not every non-selected completion.
+	Loser bool
 }

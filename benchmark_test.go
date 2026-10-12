@@ -38,6 +38,8 @@ func BenchmarkPolicyTwoHedgeWinner(benchmark *testing.B) {
 	benchmarkPolicyHedgeWinner(benchmark, 2)
 }
 
+// benchmarkPolicyHedgeWinner excludes construction and includes Report.Wait,
+// so each iteration accounts for cooperative attempt and disposal completion.
 func benchmarkPolicyHedgeWinner(benchmark *testing.B, maxHedges uint) {
 	budget, _ := hedge.NewOutstandingBudget(maxHedges)
 	policy, _ := hedge.NewPolicy(hedge.Config[int]{
@@ -71,6 +73,8 @@ func BenchmarkFailsafeGoTwoHedgeWinner(benchmark *testing.B) {
 	benchmarkFailsafeHedgeWinner(benchmark, 2)
 }
 
+// benchmarkFailsafeHedgeWinner is a separately pinned comparator workload; it
+// has no equivalent explicit disposer/wait or replay-safety declaration.
 func benchmarkFailsafeHedgeWinner(benchmark *testing.B, maxHedges int) {
 	policy := hedgepolicy.NewBuilderWithDelay[int](time.Nanosecond).WithMaxHedges(maxHedges).Build()
 	executor := failsafe.With(policy)

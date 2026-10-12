@@ -25,6 +25,11 @@
 
 ### Documentation
 
+- Clarify published-result selection, partial-value ownership, cooperative
+  cleanup and callback deadlines, shared permit ownership, metadata privacy,
+  and scheduling-slot delays in source/API documentation and the native API
+  snapshot, without changing execution behavior.
+
 - Clarify root and independently releasable nested-module tag conventions,
   route adoption discussions and vulnerability reports to their dedicated
   GitHub facilities, and correct the v1.0.0 date to the signed tag and

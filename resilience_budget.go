@@ -35,6 +35,8 @@ func selectSharedBudget(ctx context.Context) (sharedBudgetVersion, error) {
 	}
 }
 
+// original borrows an existing physical attempt without acquiring/completing
+// its outer-owned permit; otherwise this execution owns the admitted permit.
 func (version sharedBudgetVersion) original(ctx context.Context, now time.Time) (context.Context, uint64, Permit, error) {
 	if version == sharedBudgetV2 {
 		if current, ok := resilience2.AttemptFromContext(ctx); ok {
@@ -82,6 +84,8 @@ func (version sharedBudgetVersion) cancellation(err error) bool {
 	return errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded)
 }
 
+// sharedWorkPermit completes owned admission once even if reclamation paths
+// release repeatedly. Borrowed physical-attempt permits never enter this wrapper.
 type sharedWorkPermit struct {
 	permit resilience.Permit
 	once   sync.Once
@@ -94,6 +98,8 @@ func wrapResiliencePermit(permit resilience.Permit) Permit {
 	return &sharedWorkPermit{permit: permit}
 }
 
+// Release completes this owned physical admission at most once, ignoring the
+// completion return value; a nil receiver is a no-op.
 func (permit *sharedWorkPermit) Release() {
 	if permit == nil {
 		return

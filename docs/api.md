@@ -18,10 +18,22 @@ required and preserves the standalone compatibility contract.
 mutable request state. Its endpoint identity must be credential-free and at
 most `MaxResourceLength`. `ClassificationSuccess` wins;
 `ClassificationFailure` and `ClassificationCanceled` allow bounded work to
-continue; `ClassificationTerminal` stops without a success.
+continue; `ClassificationTerminal` stops without a success. Among successes
+already published when selection closes, completion time wins and ties choose the lowest
+ordinal; future completions cannot replace that selection. Selected partial
+values on terminal or all-attempt failure belong to the caller, just like winners.
+Every other returned value is disposed, including errored and zero values.
 
 `Report` exposes attempt and hedge counts, budget denials, selected ordinal,
 bounded failure metadata, terminal reason, and `Wait`. `Wait` never starts new
 work; it waits for already-started attempts and cleanup. `ExecutionError`
-unwraps only the deterministic selected cause while keeping its own message
-free of downstream text.
+unwraps a single cause while keeping its own message free of downstream text:
+lowest ordinal on all-attempt failure, the selected completion on terminal
+classification, or the local failure on construction/delay/admission paths.
+
+Cleanup uses a fresh `Background`-derived timeout per disposal, without caller
+context values or cancellation. Canceling `Wait` stops waiting, not cleanup.
+Deadlines require cooperative callbacks and do not forcibly stop synchronous
+factory/observer/budget work. Admission permits release before disposal, so
+outstanding-attempt bounds do not bound aggregate cleanup work. Caller resource
+and endpoint labels are length-checked, not automatically redacted.

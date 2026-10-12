@@ -14,14 +14,19 @@ import (
 
 // Attempt performs one independently owned execution. Cancellation is
 // cooperative; implementations must return promptly when ctx is canceled.
+// Partial/zero values on failure are classified and, unless selected for return,
+// disposed. Attempt panics become payload-free errors passed to the classifier.
 type Attempt[T any] func(context.Context) (T, error)
 
 // AttemptInfo identifies an original or additional execution. Ordinal zero is
 // always the original; positive ordinals are hedges.
 type AttemptInfo struct {
+	// Ordinal is local to Do; denied or failed hedge slots can leave gaps.
 	Ordinal uint
-	Hedge   bool
-	Delay   time.Duration
+	// Hedge is false only for the original attempt.
+	Hedge bool
+	// Delay is the chosen delay for this slot, or zero for the original.
+	Delay time.Duration
 }
 
 // AttemptFactory creates independently owned mutable state for every attempt.
@@ -29,6 +34,12 @@ type AttemptInfo struct {
 // external operation. Endpoint must be a bounded, credential-free identity
 // suitable for labels.
 type AttemptFactory[T any] interface {
+	// NewAttempt runs synchronously with the logical/admission context, before
+	// AttemptTimeout starts. It returns a non-nil unstarted attempt and an optional
+	// endpoint of at most MaxResourceLength bytes. Construction failures/panics
+	// always stop for the original, or follow FactoryFailureMode for hedges. Resources
+	// not transferred in a started attempt remain the factory's responsibility.
+	// Shared factories must support concurrent calls from separate executions.
 	NewAttempt(context.Context, AttemptInfo) (Attempt[T], string, error)
 }
 
@@ -36,7 +47,8 @@ type AttemptFactory[T any] interface {
 // AttemptFactory when construction itself needs the logical context.
 type AttemptFactoryFunc[T any] func(AttemptInfo) (Attempt[T], string, error)
 
-// NewAttempt invokes the adapted function.
+// NewAttempt invokes the adapted function without forwarding the context. A
+// nil function panics; Do rejects typed nil factories before construction.
 func (function AttemptFactoryFunc[T]) NewAttempt(_ context.Context, info AttemptInfo) (Attempt[T], string, error) {
 	return function(info)
 }
@@ -68,11 +80,17 @@ const (
 // Failure retains bounded attempt metadata without retaining or joining raw
 // error messages.
 type Failure struct {
-	Ordinal        uint
-	Hedge          bool
-	Delay          time.Duration
-	Duration       time.Duration
-	Endpoint       string
+	// Ordinal is the local original/hedge scheduling ordinal.
+	Ordinal uint
+	// Hedge identifies additional work, including continued factory failures.
+	Hedge bool
+	// Delay is the chosen slot delay, or zero for the original.
+	Delay time.Duration
+	// Duration covers attempt and classification; failed construction has zero duration.
+	Duration time.Duration
+	// Endpoint is the optional factory label, absent on construction failure.
+	Endpoint string
+	// Classification records the decision, which may be invalid on classifier failure.
 	Classification Classification
 }
 
@@ -80,19 +98,32 @@ type Failure struct {
 // shutdown code wait for cooperative loser cleanup without delaying winner
 // delivery.
 type Report struct {
-	Reason          Reason
+	// Reason describes the terminal logical outcome.
+	Reason Reason
+	// AttemptsStarted counts launched functions, excluding failed construction.
 	AttemptsStarted uint
-	HedgesStarted   uint
-	BudgetDenied    uint
-	WinnerOrdinal   uint
+	// HedgesStarted counts launched additional functions, not scheduling slots.
+	HedgesStarted uint
+	// BudgetDenied counts hedge slots denied admission; each consumes a slot.
+	BudgetDenied uint
+	// WinnerOrdinal is meaningful for ReasonNoHedgeNeeded/ReasonWinnerSelected.
+	WinnerOrdinal uint
+	// SelectedOrdinal identifies the returned failure value on all-failed or
+	// terminal-classification paths. Zero elsewhere is not evidence of selection.
 	SelectedOrdinal uint
-	Failures        []Failure
-	cleanup         *cleanupState
+	// Failures is an ordinal-sorted snapshot of retained non-success metadata,
+	// including continued construction failures. Later cleanup does not update it.
+	// The caller owns the slice; Report copies share its backing array.
+	Failures []Failure
+	cleanup  *cleanupState
 }
 
-// Wait waits for all started attempt functions to return and for every
-// non-winning returned value to be disposed. It reports cleanup failures by
-// count without exposing raw disposer messages.
+// Wait waits for accounted attempt/classification/observation work and disposal
+// of every non-selected returned value. It is not a general goroutine join.
+// Concurrent waits are supported.
+// It reports disposer errors/panics by count, without their raw messages. A zero
+// Report returns nil; otherwise ctx must be non-nil. Canceling ctx stops only this
+// wait, not cleanup. Uncooperative attempts or callbacks can prevent completion.
 func (report Report) Wait(ctx context.Context) error {
 	if report.cleanup == nil {
 		return nil
@@ -100,34 +131,53 @@ func (report Report) Wait(ctx context.Context) error {
 	return report.cleanup.wait(ctx)
 }
 
-// ExecutionError reports deterministic all-attempt failure. Its message never
-// contains downstream errors; Unwrap exposes only the documented selected
-// cause, which is the lowest ordinal failure.
+// ExecutionError reports failed execution, including local construction,
+// delay/admission failure or terminal classification. Its message omits raw
+// causes. On all-attempt failure the lowest ordinal supplies the cause; on
+// terminal classification the selected completion does. Other paths use the
+// local failure. Unwrap may expose caller/downstream error data.
 type ExecutionError struct{ cause error }
 
+// Error returns fixed text even for local failure paths; consult Report.Reason.
 func (err *ExecutionError) Error() string { return "hedge: all attempts failed" }
+
+// Unwrap returns the single selected/local cause, never a join of loser errors.
 func (err *ExecutionError) Unwrap() error { return err.cause }
 
 // CanceledError distinguishes caller cancellation from downstream failure.
 type CanceledError struct{ cause error }
 
+// Error returns a fixed caller-cancellation message.
 func (err *CanceledError) Error() string { return "hedge: caller canceled" }
+
+// Unwrap returns the caller context error, including an expired caller deadline.
 func (err *CanceledError) Unwrap() error { return err.cause }
 
 // DeadlineError distinguishes the total policy deadline from downstream
 // failure.
 type DeadlineError struct{}
 
+// Error returns a fixed total-policy-deadline message.
 func (*DeadlineError) Error() string { return "hedge: total deadline exceeded" }
+
+// Unwrap returns context.DeadlineExceeded.
 func (*DeadlineError) Unwrap() error { return context.DeadlineExceeded }
 
 // CleanupError reports how many result disposals failed.
-type CleanupError struct{ Failures uint }
+type CleanupError struct {
+	// Failures counts disposer errors and recovered disposer panics.
+	Failures uint
+}
 
+// Error reports only the failure count, without disposer messages.
 func (err *CleanupError) Error() string {
 	return fmt.Sprintf("hedge: %d cleanup operation(s) failed", err.Failures)
 }
 
+// cleanupState owns worker/disposal accounting under mu. Admission is sealed
+// after termination; only sealed-and-empty state closes done, exactly once.
+// Attempt workers stay active through classifier, observation and late disposal;
+// finish signals work completion before the runner's deferred context cancel.
 type cleanupState struct {
 	mu       sync.Mutex
 	active   uint
@@ -199,6 +249,8 @@ type attemptCompletion[T any] struct {
 	permit            Permit
 }
 
+// publicationState serializes ownership transfer to the coordinator. Closing
+// publication (not the channel) redirects late values to their runner for disposal.
 type publicationState struct {
 	mu     sync.Mutex
 	closed bool
@@ -210,6 +262,8 @@ func publish[T any](state *publicationState, channel chan<- attemptCompletion[T]
 	if state.closed {
 		return false
 	}
+	// One send per admitted attempt fits the MaxHedges+1 buffer, so this send
+	// cannot block while holding mu. The coordinator never closes the channel.
 	channel <- completion
 	return true
 }
@@ -220,9 +274,21 @@ func (state *publicationState) close() {
 	state.mu.Unlock()
 }
 
-// Do executes one original attempt and at most MaxHedges delayed concurrent
-// attempts. The factory is required to create independently owned mutable
-// state; Do never clones or interprets application requests.
+// Do executes one original attempt and at most Config.MaxHedges
+// additional delayed attempts, using a Policy constructed by NewPolicy. The
+// factory supplies fresh mutable state; Do never clones/interprets requests.
+//
+// Among successes already published when selection closes, completion time wins
+// and exact ties use the lowest local ordinal. No future completion can replace
+// that selection. Terminal classification returns its partial value; all-attempt
+// failure returns the lowest ordinal's value. Any selected returned value belongs
+// to the caller, including on error; the package disposes other returned values.
+//
+// Do cancels other attempts cooperatively and returns without waiting for their
+// cleanup; use Report.Wait during shutdown or when cleanup matters. Deadlines do
+// not interrupt synchronous, uncooperative callbacks. Nil context/policy/factory
+// yields ErrInvalidPolicy; caller cancellation and total timeout have distinct
+// error types. Shared admission requires the configured Resilience scope version.
 func Do[T any](ctx context.Context, policy *Policy[T], factory AttemptFactory[T]) (T, Report, error) {
 	var zero T
 	if ctx == nil || policy == nil || nilLike(factory) {
@@ -378,6 +444,7 @@ func Do[T any](ctx context.Context, policy *Policy[T], factory AttemptFactory[T]
 			return selected.result.Value, report, &ExecutionError{cause: completionError(selected)}
 		}
 		if timerDue {
+			// Published completions take precedence over spending the next hedge slot.
 			select {
 			case completion := <-completions:
 				value, completionErr, done := processCompletion(completion)
@@ -428,6 +495,8 @@ func Do[T any](ctx context.Context, policy *Policy[T], factory AttemptFactory[T]
 					emit(config.Observer, Observation{Outcome: OutcomeHedgeStarted, Ordinal: nextHedge, Delay: scheduledDelay, Resource: config.Resource})
 				}
 			}
+			// Denials and continued construction failures consume slots too; the
+			// next timer is relative to handling this slot, not a guaranteed launch.
 			previousDelay = scheduledDelay
 			nextHedge++
 			if err := scheduleNext(); err != nil {
@@ -570,6 +639,8 @@ func safeClassify[T any](ctx context.Context, classifier Classifier[T], result A
 }
 
 func dispose[T any](config Config[T], value T, cleanup *cleanupState, info AttemptInfo, endpoint string, duration time.Duration) {
+	// Caller cancellation must not prevent resource reclamation. A fresh
+	// deadline still requires a cooperative disposer; it cannot force termination.
 	cleanupCtx, cancel := config.Clock.WithTimeout(context.Background(), config.CleanupTimeout)
 	err := safeDispose(cleanupCtx, config.Disposer, value)
 	cancel()
@@ -663,6 +734,8 @@ func deterministicSelection[T any](completions []attemptCompletion[T]) attemptCo
 	return completions[0]
 }
 
+// completionError prefers classification failure, then attempt error, then
+// captured context error. Only this selected cause is exposed to callers.
 func completionError[T any](completion attemptCompletion[T]) error {
 	if completion.classificationErr != nil {
 		return completion.classificationErr
