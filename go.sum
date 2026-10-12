@@ -6,8 +6,8 @@ github.com/failsafe-go/failsafe-go v0.9.8 h1:NzahTEc+vg6FqCJV0Sy9mgwcaCemB81c8iS
 github.com/failsafe-go/failsafe-go v0.9.8/go.mod h1:wMKUFRbxxjWwvwhJttSiim9BaQssrlZV4lk0IwPkwUc=
 github.com/faustbrian/go-resilience v1.1.0 h1:1Xf4Zma//R8SsAMlKL86bIUUxFb6zFkyIO7ucL1m0vY=
 github.com/faustbrian/go-resilience v1.1.0/go.mod h1:yclvfAfu0cp4RTqV1KRDfxrWCKn4nb12uLa8Y5e4Srk=
-github.com/faustbrian/go-resilience/v2 v2.0.0 h1:QobjogckeYjQlkFs3ajWTB14SDSJrHqJiT9JQgkX9RI=
-github.com/faustbrian/go-resilience/v2 v2.0.0/go.mod h1:Xiz5riZS/zpYEZP8hph1p94W4oWJ5YpKDSMFXa97szM=
+github.com/faustbrian/go-resilience/v2 v2.0.1 h1:VLHwA1dEP6+FfpYs+UyS47CG6jvgX7MJr84hXxmFAio=
+github.com/faustbrian/go-resilience/v2 v2.0.1/go.mod h1:cP4EtRc5U5vpv+OOtTT5vZ6So8L67GA3yNyVC+kHeg8=
 github.com/influxdata/tdigest v0.0.1 h1:XpFptwYmnEKUqmkcDjrzffswZ3nvNeevbUSLPP/ZzIY=
 github.com/influxdata/tdigest v0.0.1/go.mod h1:Z0kXnxzbTC2qrx4NaIzYkE1k66+6oEDQTvL95hQFh5Y=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
