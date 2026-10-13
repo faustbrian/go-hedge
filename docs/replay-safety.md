@@ -1,5 +1,7 @@
 # Replay and idempotency safety
 
+[Documentation index](README.md)
+
 Concurrent replay is safe only when duplicate execution has an explicitly
 reviewed outcome. Reads can still be unsafe when they consume streams, mutate
 caches, acquire leases, or trigger billing. Writes, payments, acknowledgements,
@@ -15,3 +17,5 @@ Each factory invocation must allocate independent mutable headers, byte slices,
 bodies, readers, destinations, and callbacks, or use explicit synchronization.
 Go's `http.Request.Clone` shallow-copies `Body`; a fresh body must be created
 through `GetBody` or an application-owned replay mechanism.
+
+Continue with [API reference](api.md).

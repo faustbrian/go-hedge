@@ -1,5 +1,7 @@
 # Delay selection
 
+[Documentation index](README.md)
+
 A fixed delay repeats between scheduling slots. A schedule supplies one
 positive successive delay for every hedge slot, not an absolute start offset.
 Denied admission and continued construction failures also consume a slot and
@@ -12,3 +14,5 @@ p99, instead of hedging normal requests. Measure by resource and workload;
 cold or mixed-rollout data can be misleading. Zero or negative dynamic delays
 are terminal policy failures. The total timeout bounds schedules whose next
 timer falls beyond the remaining operation lifetime.
+
+Continue with [API reference](api.md).

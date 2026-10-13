@@ -1,5 +1,7 @@
 # API reference
 
+[Documentation index](README.md)
+
 `Config[T]` requires a finite positive hedge count, an explicit replay-safety
 declaration, exactly one delay strategy, total and cleanup timeouts, a clock,
 shared budget, classifier, disposer, bounded resource identity, and explicit

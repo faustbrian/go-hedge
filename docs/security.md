@@ -1,5 +1,7 @@
 # Security threat model
 
+[Documentation index](README.md)
+
 ## Scope and trust boundaries
 
 This model covers the root `github.com/faustbrian/go-hedge` module. The package

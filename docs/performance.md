@@ -1,5 +1,7 @@
 # Performance
 
+[Documentation index](README.md)
+
 Benchmarks compare equivalent direct execution, no-hedge completion, one hedge,
 multiple hedges, result cleanup, and observation paths with `-benchmem`.
 Performance reports must publish Go and OS versions, CPU, corpus or latency
@@ -13,3 +15,5 @@ The Failsafe-Go no-hedge benchmark uses v0.9.8 with one configured hedge;
 Failsafe-Go's benchmarked API does not provide this module's mandatory replay
 declaration, disposer, cleanup wait handle, or identical shared-budget result
 contract, so allocation numbers are contextual rather than a parity claim.
+
+Continue with [API reference](api.md).

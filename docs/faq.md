@@ -1,5 +1,7 @@
 # FAQ
 
+[Documentation index](README.md)
+
 ## Is a hedge a retry?
 
 No. A hedge starts while an earlier attempt can still be active. A retry starts
@@ -23,3 +25,5 @@ duplicates for the required window. The package does not infer that proof.
 
 The denial itself did not create that error. It prevented extra work; the error
 came from the deterministic selected existing attempt.
+
+Continue with [API reference](api.md).

@@ -1,5 +1,7 @@
 # Operations
 
+[Documentation index](README.md)
+
 Choose a bounded resource identity and share one budget across all executions
 for it. Monitor logical operations, hedges started, budget denials, winner
 ordinal, all-failure outcomes, total deadlines, cleanup failures, latency, and
@@ -15,3 +17,5 @@ capacity or delay review, not that the downstream failed.
 During drain, retain reports and wait with a deadline. A blocked wait identifies
 an attempt that has not cooperated; never claim all losers stopped merely
 because their contexts were canceled.
+
+Continue with [API reference](api.md).

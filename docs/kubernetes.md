@@ -1,5 +1,7 @@
 # Kubernetes sizing and drain
 
+[Documentation index](README.md)
+
 Budgets and caller-owned latency history are process-local unless the caller
 provides a distributed implementation. With `L` concurrent logical operations,
 `H` maximum hedges, and a pod budget `B`, a pod has at most `L + min(L*H, B)`
@@ -22,3 +24,5 @@ Graceful shutdown order:
 5. report a `Wait` deadline as an uncooperative attempt, not successful cleanup.
 
 Cancellation does not terminate code that ignores its context.
+
+Continue with [API reference](api.md).

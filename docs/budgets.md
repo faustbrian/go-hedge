@@ -1,5 +1,7 @@
 # Budgets and amplification
 
+[Documentation index](README.md)
+
 `MaxHedges` bounds one logical operation. A shared `Budget` bounds additional
 work across concurrent logical operations. Every budget declares a finite
 positive `Capacity` bounded by `MaxBudgetCapacity`. `OutstandingBudget(B)`
@@ -41,3 +43,5 @@ Configuring both budget owners is rejected. Capacity exhaustion increments
 `Report.BudgetDenied` and leaves admitted attempts running; missing scope,
 cancellation, closed scope, or invalid lineage remains a typed local failure
 and cannot be classified as a downstream result.
+
+Continue with [API reference](api.md).

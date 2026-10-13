@@ -1,5 +1,7 @@
 # Composition
 
+[Documentation index](README.md)
+
 - **Bulkhead:** hedging outside admission makes every attempt compete for a
   permit and keeps total dependency concurrency visible. Hedging inside one
   logical permit can bypass the intended dependency bound unless the bulkhead
@@ -26,3 +28,5 @@
 - **Adaptive throttle:** local throttle rejection is an admission decision, not
   a hedgeable downstream failure by default. Starting another attempt evades
   the protection and increases load.
+
+Continue with [API reference](api.md).
