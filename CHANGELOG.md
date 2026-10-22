@@ -44,6 +44,12 @@
 
 - Replace the archived monorepo link with package-owned documentation.
 
+## 1.2.0 - 2026-10-22
+
+### Changed
+
+- Publish the current source and documentation with a fresh immutable tag.
+
 ## 1.1.1 - 2026-10-06
 
 ### Changed
